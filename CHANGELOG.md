@@ -8,6 +8,9 @@ The changes documented here do not include those from the original repository.
 
 ## [Unreleased]
 
+### 16-05-2023
+Android - Editing photos is now possible when using ChooseFromGallery for single items. (https://outsystemsrd.atlassian.net/browse/RMET-2493)
+
 ### Features
 - [iOS] Add `MediaResult` output parameter to `Take Picture` client action (https://outsystemsrd.atlassian.net/browse/RMET-2492).
 - [iOS] Select iCloud media on `Choose from Gallery` (https://outsystemsrd.atlassian.net/browse/RMET-2435).
