@@ -86,6 +86,8 @@ class CameraLauncher : CordovaPlugin() {
             = false // Should we allow the user to save the video in the gallery
     private var includeMetadata
             = false // Should we allow the app to obtain metadata about the media item
+    private var latestVersion
+            = false // Used to distinguish between the deprecated and latest version
     var callbackContext: CallbackContext? = null
     private var numPics = 0
     private var conn // Used to update gallery app with newly-written files
@@ -175,7 +177,16 @@ class CameraLauncher : CordovaPlugin() {
                 destType = parameters.getInt(DEST_TYPE)
                 srcType = parameters.getInt(SOURCE_TYPE)
                 mediaType = parameters.getInt(MEDIA_TYPE)
-                includeMetadata = parameters.getBoolean(INCLUDE_METADATA)
+                includeMetadata = false
+                latestVersion = false
+
+                if (parameters.has(INCLUDE_METADATA)) {
+                    includeMetadata = parameters.getBoolean(INCLUDE_METADATA)
+                }
+
+                if (parameters.has(LATEST_VERSION)) {
+                    latestVersion = parameters.getBoolean(LATEST_VERSION)
+                }
 
                 // If the user specifies a 0 or smaller width/height
                 // make it -1 so later comparisons succeed
@@ -203,7 +214,9 @@ class CameraLauncher : CordovaPlugin() {
                     mediaType,
                     allowEdit,
                     correctOrientation,
-                    saveToPhotoAlbum
+                    saveToPhotoAlbum,
+                    includeMetadata,
+                    latestVersion
                 )
 
                 try {
@@ -563,7 +576,6 @@ class CameraLauncher : CordovaPlugin() {
                 // to pass arcane codes back.
                 destType = requestCode - CROP_CAMERA
                 try {
-                    //processResultFromCamera(destType, intent)
                     camParameters?.let { it ->
                         camController?.processResultFromCamera(
                             cordova.activity,
@@ -573,6 +585,12 @@ class CameraLauncher : CordovaPlugin() {
                             { image ->
                                 val pluginResult = PluginResult(PluginResult.Status.OK, image)
                                 this.callbackContext?.sendPluginResult(pluginResult)
+                            },
+                            { mediaResult ->
+                                val gson = GsonBuilder().create()
+                                val resultJson = gson.toJson(mediaResult)
+                                val pluginResult = PluginResult(PluginResult.Status.OK, resultJson)
+                                callbackContext?.sendPluginResult(pluginResult)
                             },
                             { error ->
                                 sendError(error)
@@ -597,7 +615,14 @@ class CameraLauncher : CordovaPlugin() {
                         val tmpFile = FileProvider.getUriForFile(
                             cordova.activity,
                             "$applicationId.camera.provider",
-                            camController!!.createCaptureFile(cordova.activity, encodingType)
+                            camController!!.createCaptureFile(
+                                cordova.activity,
+                                encodingType,
+                                cordova.activity.getSharedPreferences(
+                                    STORE,
+                                    Context.MODE_PRIVATE
+                                ).getString(EDIT_FILE_NAME_KEY, "") ?: ""
+                            )
                         )
                         cordova.setActivityResultCallback(this)
                         camController?.openCropActivity(
@@ -616,6 +641,12 @@ class CameraLauncher : CordovaPlugin() {
                                 {
                                     val pluginResult = PluginResult(PluginResult.Status.OK, it)
                                     this.callbackContext?.sendPluginResult(pluginResult)
+                                },
+                                { mediaResult ->
+                                    val gson = GsonBuilder().create()
+                                    val resultJson = gson.toJson(mediaResult)
+                                    val pluginResult = PluginResult(PluginResult.Status.OK, resultJson)
+                                    callbackContext?.sendPluginResult(pluginResult)
                                 },
                                 {
                                     val pluginResult =
@@ -905,9 +936,11 @@ class CameraLauncher : CordovaPlugin() {
         protected val permissions = createPermissionArray()
 
         private const val STORE = "CameraStore"
+        private const val EDIT_FILE_NAME_KEY = "EditFileName"
         private const val VIDEO_URI = "videoURI"
         private const val SAVE_TO_GALLERY = "saveToGallery"
         private const val INCLUDE_METADATA = "includeMetadata"
+        private const val LATEST_VERSION = "latestVersion"
         private const val ALLOW_MULTIPLE = "allowMultipleSelection"
         private const val MEDIA_TYPE = "mediaType"
 
