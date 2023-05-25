@@ -182,11 +182,7 @@ cameraExport.cleanup = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, 'Camera', 'cleanup', []);
 };
 
-/**
- * TODO: Description of functionality
- */
- cameraExport.editPicture = function (successCallback, errorCallback, options) {
-
+cameraExport.editPicture = function (successCallback, errorCallback, options) {
     argscheck.checkArgs('fFO', 'Camera.editPicture', arguments);
     options = options || {};
     var getValue = argscheck.getValue;
@@ -198,6 +194,16 @@ cameraExport.cleanup = function (successCallback, errorCallback) {
 
     var args = [imageByteArray];
     exec(successCallback, errorCallback, 'Camera', 'editPicture', args);
+};
+
+cameraExport.editURIPicture = function (successCallback, errorCallback, options) {
+    argscheck.checkArgs('fFO', 'Camera.editURIPicture', arguments);
+    options = options || {};
+    
+    let {uri, saveToGallery, includeMetadata} = options;
+    let args = [{uri, saveToGallery, includeMetadata}];
+
+    exec(successCallback, errorCallback, 'Camera', 'editURIPicture', args);
 };
 
 cameraExport.recordVideo = function(successCallback, errorCallback, options) {
