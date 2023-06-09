@@ -6,16 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The changes documented here do not include those from the original repository.
 
-## [Unreleased]
+## [4.2.0-OS42]
 
 ### Features
 
-- [Android] Fix ChooseFromGallery when selecting remote files. (https://outsystemsrd.atlassian.net/browse/RMET-2567)
-
-- [Android] Implement EditURIPicture. (https://outsystemsrd.atlassian.net/browse/RMET-2565)
-
-- [Android] Editing photos is now possible when using ChooseFromGallery for single items. (https://outsystemsrd.atlassian.net/browse/RMET-2493)
-- [Android] Add MediaResult to TakePicture (https://outsystemsrd.atlassian.net/browse/RMET-2491)
+- [Android] Implement EditURIPicture. (https://outsystemsrd.atlassian.net/browse/RMET-2565).
+- [Android] Editing photos is now possible when using ChooseFromGallery for single items. (https://outsystemsrd.atlassian.net/browse/RMET-2493).
+- [Android] Add MediaResult to TakePicture (https://outsystemsrd.atlassian.net/browse/RMET-2491).
 
 - [iOS] Add `Edit Picture` that takes an image from a URI (https://outsystemsrd.atlassian.net/browse/RMET-2564).
 - [iOS] Add `AllowEdit` input parameter to `Choose from Gallery` client action (https://outsystemsrd.atlassian.net/browse/RMET-2494).
@@ -26,6 +23,8 @@ The changes documented here do not include those from the original repository.
 - [Bridge] Add `include Metadata` to `TakePicture` (https://outsystemsrd.atlassian.net/browse/RMET-2350).
 
 ### Fix
+
+- [Android] Fix ChooseFromGallery when selecting remote files. (https://outsystemsrd.atlassian.net/browse/RMET-2567).
 
 - [iOS] Select iCloud media on `Choose from Gallery` (https://outsystemsrd.atlassian.net/browse/RMET-2435).
 
