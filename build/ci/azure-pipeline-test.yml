@@ -131,7 +131,7 @@ stages:
               THREADS: 3
               STORAGE_ID: $(storageID)
               WORKING_DIR: $(System.DefaultWorkingDirectory)/MobilePluginsE2ETests
-
+              
       - job: iOS_e2e_tests_P0s
         displayName: "iOS E2E P0 tests"
         dependsOn: update_sampleapp
@@ -155,7 +155,7 @@ stages:
               THREADS: 3
               STORAGE_ID: $(storageID)
               WORKING_DIR: $(System.DefaultWorkingDirectory)/MobilePluginsE2ETests
-
+              
       - job: iOS_e2e_tests_non_P0s
         dependsOn: iOS_e2e_tests_P0s
         displayName: "iOS E2E Non P0 tests"
