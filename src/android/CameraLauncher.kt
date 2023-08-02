@@ -337,12 +337,17 @@ class CameraLauncher : CordovaPlugin() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
             )
-        } else if (!saveAlbumPermission && takePicturePermission && Build.VERSION.SDK_INT >= 33) {
+        } else if (!saveAlbumPermission && takePicturePermission && Build.VERSION.SDK_INT == 33) {
             PermissionHelper.requestPermissions(
                 this,
                 TAKE_PIC_SEC,
                 arrayOf(READ_MEDIA_VIDEO, READ_MEDIA_IMAGES)
             )
+        }
+        // we don't want to ask for this permission from Android 14 onwards
+        else if (!saveAlbumPermission && takePicturePermission && Build.VERSION.SDK_INT > 33) {
+            cordova.setActivityResultCallback(this)
+            camController?.takePicture(cordova.activity, returnType, encodingType)
         } else {
             PermissionHelper.requestPermissions(this, TAKE_PIC_SEC, permissions)
         }
@@ -367,7 +372,7 @@ class CameraLauncher : CordovaPlugin() {
                 SAVE_TO_ALBUM_SEC,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
-        } else if (Build.VERSION.SDK_INT >= 33 && (!PermissionHelper.hasPermission(
+        } else if (Build.VERSION.SDK_INT == 33 && (!PermissionHelper.hasPermission(
                 this,
                 READ_MEDIA_IMAGES
             ) || !PermissionHelper.hasPermission(this, READ_MEDIA_VIDEO))
@@ -406,7 +411,8 @@ class CameraLauncher : CordovaPlugin() {
                         PermissionHelper.hasPermission(this, READ_MEDIA_VIDEO) &&
                         PermissionHelper.hasPermission(this, READ_MEDIA_IMAGES)))
 
-        if (galleryPermissionNeeded) {
+        // we don't want to ask for this permission from Android 14 onwards
+        if (galleryPermissionNeeded && Build.VERSION.SDK_INT <= 33) {
             if (Build.VERSION.SDK_INT < 33) {
                 var permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 if (editParameters.saveToGallery) {
@@ -463,7 +469,7 @@ class CameraLauncher : CordovaPlugin() {
             )
             return
         }
-        else if (galleryPermissionNeeded) {
+        else if (galleryPermissionNeeded && Build.VERSION.SDK_INT <= 33) {
             if (Build.VERSION.SDK_INT < 33) {
                 PermissionHelper.requestPermissions(
                     this,
@@ -517,7 +523,7 @@ class CameraLauncher : CordovaPlugin() {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
         }
-        else if (Build.VERSION.SDK_INT >= 33
+        else if (Build.VERSION.SDK_INT == 33
             && (!PermissionHelper.hasPermission(this, READ_MEDIA_IMAGES)
                     || !PermissionHelper.hasPermission(this, READ_MEDIA_VIDEO))) {
             PermissionHelper.requestPermissions(
@@ -526,6 +532,7 @@ class CameraLauncher : CordovaPlugin() {
                 arrayOf(READ_MEDIA_VIDEO, READ_MEDIA_IMAGES)
             )
         }
+        // we don't want to ask for this permission from Android 14 onwards
         else {
             callChooseFromGallery()
         }
@@ -1036,11 +1043,17 @@ class CameraLauncher : CordovaPlugin() {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
-            } else {
+            } else if (Build.VERSION.SDK_INT == 33) {
                 arrayOf(
                     Manifest.permission.CAMERA,
                     READ_MEDIA_IMAGES,
                     READ_MEDIA_VIDEO
+                )
+            }
+            // we don't want to request READ_MEDIA_IMAGES and READ_MEDIA_VIDEO for Android >= 14
+            else {
+                arrayOf(
+                    Manifest.permission.CAMERA
                 )
             }
         }
