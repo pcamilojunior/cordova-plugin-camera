@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The changes documented here do not include those from the original repository.
 
+
+## [Unreleased]
+
+### 03-08-2023
+Android - Avoid asking for unnecessary permissions for Android >= 13. (https://outsystemsrd.atlassian.net/browse/RMET-2656)
+
 ## [4.2.0-OS42]
 
 ### Features
